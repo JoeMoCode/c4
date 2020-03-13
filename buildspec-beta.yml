@@ -1,0 +1,17 @@
+
+
+phases:
+  install:
+    commands:
+       - curl -o- -L https://yarnpkg.com/install.sh | bash
+       - yarn install
+       - npm install -g ask-cli
+  build:
+    commands:
+      - cd $CODEBUILD_SRC_DIR/connect-4-skill
+      - ask deploy
+      - cd ../
+artifacts:
+  base-directory: $CODEBUILD_SRC_DIR/
+  files:
+    - '**/*'  
