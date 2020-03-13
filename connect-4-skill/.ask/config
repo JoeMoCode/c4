@@ -4,6 +4,35 @@
       "skill_id": "",
       "was_cloned": false,
       "merge": {}
+    },
+    "JoeMuoioPersonal": {
+      "skill_id": "amzn1.ask.skill.df439097-5ba4-4ca5-bd6b-7678202768cf",
+      "was_cloned": false,
+      "merge": {},
+      "resources": {
+        "manifest": {
+          "eTag": "64f81067b9a555fe02c7461c7da002e5"
+        },
+        "interactionModel": {
+          "en-US": {
+            "eTag": "d8a8aa7d82596254c9a351db5b0695cc"
+          }
+        },
+        "lambda": [
+          {
+            "alexaUsage": [
+              "custom/default"
+            ],
+            "arn": "arn:aws:lambda:us-east-1:332609039282:function:ask-custom-connect-4-skill-default",
+            "awsRegion": "us-east-1",
+            "codeUri": "lambda/custom",
+            "functionName": "ask-custom-connect-4-skill-default",
+            "handler": "index.handler",
+            "revisionId": "9ea90dae-5a04-4241-ad3e-4738da236046",
+            "runtime": "nodejs10.x"
+          }
+        ]
+      }
     }
   }
 }
