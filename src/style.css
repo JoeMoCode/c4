@@ -51,6 +51,10 @@ h2 {
 .section {
   margin: 1em auto 0 auto;
 }
+.section-message {
+  font-size: 3em;
+  word-spacing: .75em;
+}
 .mode,
 .message {
   position: absolute;

@@ -2,6 +2,7 @@ import { Board, BoardPiece, BoardBase } from '../board'
 import { GameBase } from './game-base'
 import { Player, PlayerHuman, PlayerAi } from '../player'
 import { Utils } from '../utils'
+import { AlexaHandler } from '../alexa'
 
 class GameLocalAi extends GameBase {
   constructor(players: Array<Player>, board: BoardBase) {
@@ -38,4 +39,11 @@ export function initGameLocalAi() {
       humanPlayer.doAction(column)
     }
   })
+
+  //If it is an Alexa instance, Add the voice handler!
+  if(true) {
+    const alexaHandler = new AlexaHandler();
+    
+
+  }
 }
