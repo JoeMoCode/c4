@@ -1,7 +1,7 @@
 {
     "interactionModel": {
         "languageModel": {
-            "invocationName": "hello world",
+            "invocationName": "connect four",
             "intents": [
                 {
                     "name": "AMAZON.CancelIntent",
@@ -16,16 +16,24 @@
                     "samples": []
                 },
                 {
-                    "name": "HelloWorldIntent",
-                    "slots": [],
+                    "name":"AMAZON.FallbackIntent",
+                    "samples": []
+                },
+                {
+                    "name": "MoveIntent",
+                    "slots": [
+                        {
+                            "name":"ordinal",
+                            "type": "AMAZON.Ordinal"
+                        },
+                        {
+                            "name":"number",
+                            "type": "AMAZON.NUMBER"
+                        }
+                    ],
                     "samples": [
-                        "hello",
-                        "how are you",
-                        "say hi world",
-                        "say hi",
-                        "hi",
-                        "say hello world",
-                        "say hello"
+                        "{number}",
+                        "{ordinal}"
                     ]
                 },
                 {

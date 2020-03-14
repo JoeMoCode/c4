@@ -2,13 +2,23 @@ version: 0.2
 
 phases:
   install:
+    runtime-versions:
+      nodejs: 10
     commands:
-       - curl -o- -L https://yarnpkg.com/install.sh | bash
-       - yarn install
-       - npm install -g ask-cli
+      - echo Installing Yarn...
+      - npm install -g yarn
+      - echo Installing ASK CLI
+      - npm install -g ask-cli
   build:
     commands:
       - cd $CODEBUILD_SRC_DIR/connect-4-skill
+      - echo Setting up credentials ASK CLI
+      - mkdir /root/.ask
+      - echo "$ASK_CREDENTIALS" >> /root/.ask/cli_config
+      - echo Making /root/.aws/ directory
+      - mkdir /root/.aws
+      - echo Copying credentials to /root/.aws/credentials
+      - echo "$AWS_CREDENTIALS" >> /root/.aws/credentials
       - ask deploy
       - cd ../
 artifacts:
