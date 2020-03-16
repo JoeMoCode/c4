@@ -19,8 +19,7 @@ phases:
       - mkdir /root/.aws
       - echo Copying credentials to /root/.aws/credentials
       - echo "$AWS_CREDENTIALS" >> /root/.aws/credentials
-      - ask deploy
-      - cd ../
+      - ask deploy -p JoeMuoioPersonal
 artifacts:
   base-directory: $CODEBUILD_SRC_DIR/
   files:
