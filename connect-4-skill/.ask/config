@@ -15,7 +15,7 @@
         },
         "interactionModel": {
           "en-US": {
-            "eTag": "695569071462044efb3b4188d52603e1"
+            "eTag": "140e9bfa3c6f42c2bd92c19e839935b3"
           }
         },
         "lambda": [
@@ -28,7 +28,7 @@
             "codeUri": "lambda/custom",
             "functionName": "ask-custom-connect-4-skill-default",
             "handler": "index.handler",
-            "revisionId": "1349097c-8e59-4589-9cc4-8dff005d57cd",
+            "revisionId": "d9abb3fa-d14a-4fd8-9cc4-72844ef3373c",
             "runtime": "nodejs10.x"
           }
         ]

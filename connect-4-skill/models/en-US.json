@@ -16,8 +16,13 @@
                     "samples": []
                 },
                 {
-                    "name":"AMAZON.FallbackIntent",
-                    "samples": []
+                    "name": "StartGameIntent",
+                    "samples": [
+                        "start",
+                        "begin",
+                        "commence",
+                        "play"
+                    ]
                 },
                 {
                     "name": "MoveIntent",

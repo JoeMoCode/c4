@@ -4,10 +4,6 @@
  * session persistence, api calls, and more.
  * */
 const Alexa = require('ask-sdk-core');
-// i18n library dependency, we use it below in a localisation interceptor
-const i18n = require('i18next');
-// i18n strings for all supported locales
-const languageStrings = require('./languageStrings');
 
 const LaunchRequestHandler = {
     canHandle(handlerInput) {
@@ -23,10 +19,28 @@ const LaunchRequestHandler = {
     }
 };
 
-const HelloWorldIntentHandler = {
+const MoveIntentHandler = {
     canHandle(handlerInput) {
         return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
-            && Alexa.getIntentName(handlerInput.requestEnvelope) === 'HelloWorldIntent';
+            && Alexa.getIntentName(handlerInput.requestEnvelope) === 'MoveIntent';
+    },
+    handle(handlerInput) {
+        //TODO get the slots and resolve to a value.
+        console.log("Slot ordinal: "  + JSON.stringify(Alexa.getSlot(handlerInput.requestEnvelope, "ordinal")));
+        console.log("Slot number: "  + JSON.stringify(Alexa.getSlot(handlerInput.requestEnvelope, "number")));
+        const speakOutput = handlerInput.t('HELLO_MSG');
+
+        return handlerInput.responseBuilder
+            .speak(speakOutput)
+            //.reprompt('add a reprompt if you want to keep the session open for the user to respond')
+            .getResponse();
+    }
+};
+
+const StartGameIntentHandler = {
+    canHandle(handlerInput) {
+        return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
+            && Alexa.getIntentName(handlerInput.requestEnvelope) === 'StartGameIntent';
     },
     handle(handlerInput) {
         const speakOutput = handlerInput.t('HELLO_MSG');
@@ -36,7 +50,7 @@ const HelloWorldIntentHandler = {
             //.reprompt('add a reprompt if you want to keep the session open for the user to respond')
             .getResponse();
     }
-};
+}
 
 const HelpIntentHandler = {
     canHandle(handlerInput) {
@@ -159,7 +173,8 @@ const LocalisationRequestInterceptor = {
 exports.handler = Alexa.SkillBuilders.custom()
     .addRequestHandlers(
         LaunchRequestHandler,
-        HelloWorldIntentHandler,
+        MoveIntentHandler,
+        StartGameIntentHandler,
         HelpIntentHandler,
         CancelAndStopIntentHandler,
         FallbackIntentHandler,
