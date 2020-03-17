@@ -5,16 +5,37 @@
  * */
 const Alexa = require('ask-sdk-core');
 
+const START_GAME_PROMPT = "Joe, would you like to start the game? ";
+const WELCOME_MESSAGE = "Welcome to the connect four game. I do not think you can beat me, mere mortal human, for I am a powerful A.I. ";
+const MOVE_MESSAGE_NO_SLOT = "Hmm. I had a problem understanding that move. ";
+const START_GAME_MESSAGE = "Starting the game now. ";
+const MOVE_REPROMPT = "You can select columns one through seven. Which column do you want? ";
+const GOODBYE_MESSAGE = "Okay, come back, soon! ";
+const TOO_SCARED_MESSAGE = "Oh, you must be too scared to challenge me. Come back when you are up to the challenge. ";
+const HELP_MESSAGE = "The goal of the game is to get 4 pieces of your color in a row. You can tap a column on the screen or simply say the column you want to move in. ";
+const HELP_MESSAGE_REPROMPT = "Which column would you like to move in? ";
+const ERROR_PROMPT = MOVE_REPROMPT;
+const ERROR_MESSAGE = "There was a problem with that. " + ERROR_PROMPT;
+const APL_VISUAL_START_MSG = "APL Visuals are not yet supported. ";
+const APL_VISUAL_REPROMPT_MSG = "Do you really want to play against me with APL visuals? ";
+const NO_VISUAL_START_MSG = "This game is not playable without visuals right now. Goodbye. ";
+const NO_VISUAL_REPROMPT_MSG = "";
+
+const START_GAME_KEY = "startQ";
+
 const LaunchRequestHandler = {
     canHandle(handlerInput) {
         return Alexa.getRequestType(handlerInput.requestEnvelope) === 'LaunchRequest';
     },
     handle(handlerInput) {
-        const speakOutput = handlerInput.t('WELCOME_MSG');
+        const speakOutput = WELCOME_MESSAGE + START_GAME_PROMPT;
+        const attributesManager = handlerInput.attributesManager;
+        const sessionAttributes = attributesManager.getSessionAttributes() || {};
+        sessionAttributes[START_GAME_KEY] = 1;
 
         return handlerInput.responseBuilder
             .speak(speakOutput)
-            .reprompt(speakOutput)
+            .reprompt(START_GAME_PROMPT)
             .getResponse();
     }
 };
@@ -28,27 +49,75 @@ const MoveIntentHandler = {
         //TODO get the slots and resolve to a value.
         console.log("Slot ordinal: "  + JSON.stringify(Alexa.getSlot(handlerInput.requestEnvelope, "ordinal")));
         console.log("Slot number: "  + JSON.stringify(Alexa.getSlot(handlerInput.requestEnvelope, "number")));
-        const speakOutput = handlerInput.t('HELLO_MSG');
+
+        const column = 1;
+        const speakOutput = `Okay, moving to column ${column}` + MOVE_REPROMPT;
 
         return handlerInput.responseBuilder
             .speak(speakOutput)
-            //.reprompt('add a reprompt if you want to keep the session open for the user to respond')
+            .reprompt(MOVE_REPROMPT)
             .getResponse();
     }
 };
 
+const NoIntentHandler = {
+    canHandle(handlerInput) {
+        return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
+            && Alexa.getIntentName(handlerInput.requestEnvelope) === 'AMAZON.NoIntent';
+    },
+    handle(handlerInput) {
+        return handlerInput.responseBuilder
+            .speak(TOO_SCARED_MESSAGE)
+            .getResponse();
+    }
+}
+
 const StartGameIntentHandler = {
     canHandle(handlerInput) {
         return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
-            && Alexa.getIntentName(handlerInput.requestEnvelope) === 'StartGameIntent';
+            && (Alexa.getIntentName(handlerInput.requestEnvelope) === 'StartGameIntent' 
+            || Alexa.getIntentName(handlerInput.requestEnvelope) === 'AMAZON.YesIntent'); // TODO add some logic to check question.
     },
     handle(handlerInput) {
-        const speakOutput = handlerInput.t('HELLO_MSG');
+        const supportedInterfaces = Alexa.getSupportedInterfaces(handlerInput.requestEnvelope);
 
-        return handlerInput.responseBuilder
-            .speak(speakOutput)
-            //.reprompt('add a reprompt if you want to keep the session open for the user to respond')
-            .getResponse();
+        if(supportedInterfaces["Alexa.Presentation.HTML"]) {
+            return handlerInput.responseBuilder
+                .addDirective({
+                    type: "Alexa.Presentation.HTML.Start",
+                    data: {
+                        mySsml: "<speak>Hello</speak"
+                    },
+                    request: {
+                        uri: "https://connect-4-alexa.s3.amazonaws.com/webapp/index.html",
+                        method: "GET"
+                    },
+                    transformers: [
+                        {
+                            inputPath: "mySsml",
+                            transformer: "ssmlToSpeech",
+                            outputName: "myTransformedSsml"
+                        }
+                    ],
+                    configuration: {
+                        timeoutInSeconds: 300
+                    }
+                })
+                .speak(START_GAME_MESSAGE)
+                .reprompt(false)
+                .getResponse();
+        } else if(supportedInterfaces["Alexa.Presentation.APL"]) {
+            //TODO APL Visuals.
+            return handlerInput.responseBuilder
+                .speak(APL_VISUAL_START_MSG + APL_VISUAL_REPROMPT_MSG)
+                .reprompt(APL_VISUAL_REPROMPT_MSG)
+                .getResponse();
+        } else {
+            return handlerInput.responseBuilder
+                .speak(NO_VISUAL_START_MSG + NO_VISUAL_REPROMPT_MSG)
+                // .reprompt(NO_VISUAL_REPROMPT_MSG)
+                .getResponse();
+        }
     }
 }
 
@@ -58,11 +127,9 @@ const HelpIntentHandler = {
             && Alexa.getIntentName(handlerInput.requestEnvelope) === 'AMAZON.HelpIntent';
     },
     handle(handlerInput) {
-        const speakOutput = handlerInput.t('HELP_MSG');
-
         return handlerInput.responseBuilder
-            .speak(speakOutput)
-            .reprompt(speakOutput)
+            .speak(HELP_MESSAGE + HELP_MESSAGE_REPROMPT)
+            .reprompt(HELP_MESSAGE_REPROMPT)
             .getResponse();
     }
 };
@@ -74,7 +141,7 @@ const CancelAndStopIntentHandler = {
                 || Alexa.getIntentName(handlerInput.requestEnvelope) === 'AMAZON.StopIntent');
     },
     handle(handlerInput) {
-        const speakOutput = handlerInput.t('GOODBYE_MSG');
+        const speakOutput = GOODBYE_MESSAGE;
 
         return handlerInput.responseBuilder
             .speak(speakOutput)
@@ -92,11 +159,9 @@ const FallbackIntentHandler = {
             && Alexa.getIntentName(handlerInput.requestEnvelope) === 'AMAZON.FallbackIntent';
     },
     handle(handlerInput) {
-        const speakOutput = handlerInput.t('FALLBACK_MSG');
-
         return handlerInput.responseBuilder
-            .speak(speakOutput)
-            .reprompt(speakOutput)
+            .speak("Sorry, I don\'t know about that. Please try again.")
+            .reprompt("Sorry, I don\'t know about that. Please try again.")
             .getResponse();
     }
 };
@@ -126,11 +191,11 @@ const IntentReflectorHandler = {
     },
     handle(handlerInput) {
         const intentName = Alexa.getIntentName(handlerInput.requestEnvelope);
-        const speakOutput = handlerInput.t('REFLECTOR_MSG', {intentName: intentName});
+        const speakOutput = `You just triggered ${intentName}.`;
 
         return handlerInput.responseBuilder
             .speak(speakOutput)
-            //.reprompt('add a reprompt if you want to keep the session open for the user to respond')
+            .reprompt(speakOutput)
             .getResponse();
     }
 };
@@ -144,27 +209,16 @@ const ErrorHandler = {
         return true;
     },
     handle(handlerInput, error) {
-        const speakOutput = handlerInput.t('ERROR_MSG');
-        console.log(`~~~~ Error handled: ${JSON.stringify(error)}`);
+        console.log(`~~~~ Error handled stringified: ${JSON.stringify(error)}`);
+        console.log(`~~~~ Error stack: ${error.stack}`);
 
         return handlerInput.responseBuilder
-            .speak(speakOutput)
-            .reprompt(speakOutput)
+            .speak(ERROR_MESSAGE)
+            .reprompt(ERROR_PROMPT)
             .getResponse();
     }
 };
 
-// This request interceptor will bind a translation function 't' to the handlerInput
-const LocalisationRequestInterceptor = {
-    process(handlerInput) {
-        i18n.init({
-            lng: Alexa.getLocale(handlerInput.requestEnvelope),
-            resources: languageStrings
-        }).then((t) => {
-            handlerInput.t = (...args) => t(...args);
-        });
-    }
-};
 /**
  * This handler acts as the entry point for your skill, routing all request and response
  * payloads to the handlers above. Make sure any new handlers or interceptors you've
@@ -175,14 +229,15 @@ exports.handler = Alexa.SkillBuilders.custom()
         LaunchRequestHandler,
         MoveIntentHandler,
         StartGameIntentHandler,
+        NoIntentHandler,
         HelpIntentHandler,
         CancelAndStopIntentHandler,
         FallbackIntentHandler,
         SessionEndedRequestHandler,
-        IntentReflectorHandler)
+        IntentReflectorHandler
+    )
     .addErrorHandlers(
-        ErrorHandler)
-    .addRequestInterceptors(
-        LocalisationRequestInterceptor)
-    .withCustomUserAgent('sample/hello-world/v1.2')
+        ErrorHandler
+    )
+    .withCustomUserAgent('joe-is-the-greatest')
     .lambda();

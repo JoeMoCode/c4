@@ -1,4 +1,4 @@
-declare var Alexa: any;
+/*declare var Alexa: any;
 
 
 class AlexaHandler {
@@ -21,4 +21,4 @@ function initAlexa() {
         // This is invoked for every HandleMessage directive from the skill.
         alert('received a message: ' + message);
     });
-}
+}*/

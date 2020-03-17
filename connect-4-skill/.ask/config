@@ -11,11 +11,11 @@
       "merge": {},
       "resources": {
         "manifest": {
-          "eTag": "64f81067b9a555fe02c7461c7da002e5"
+          "eTag": "1e8a1d079d098dbc6f842d08a29a26bd"
         },
         "interactionModel": {
           "en-US": {
-            "eTag": "c768e44a433f16f1ec64a5d8e8ada59d"
+            "eTag": "b1b71abf6b1ed939c498e0ad774bf805"
           }
         },
         "lambda": [
@@ -28,7 +28,7 @@
             "codeUri": "lambda/custom",
             "functionName": "ask-custom-connect-4-skill-default",
             "handler": "index.handler",
-            "revisionId": "3ee816ba-07d9-4040-a9cf-d540e41a3a98",
+            "revisionId": "de1d2c71-51ac-405d-b916-0abf727f9006",
             "runtime": "nodejs10.x"
           }
         ]
