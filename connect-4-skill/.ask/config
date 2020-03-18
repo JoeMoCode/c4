@@ -28,7 +28,7 @@
             "codeUri": "lambda/custom",
             "functionName": "ask-custom-connect-4-skill-default",
             "handler": "index.handler",
-            "revisionId": "de1d2c71-51ac-405d-b916-0abf727f9006",
+            "revisionId": "f1c650a7-3c57-4513-adf2-11039fa2e320",
             "runtime": "nodejs10.x"
           }
         ]

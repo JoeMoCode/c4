@@ -6,7 +6,7 @@
 const Alexa = require('ask-sdk-core');
 
 const START_GAME_PROMPT = "Joe, would you like to start the game? ";
-const WELCOME_MESSAGE = "Welcome to the connect four game. I do not think you can beat me, mere mortal human, for I am a powerful A.I. ";
+const WELCOME_MESSAGE = "Welcome to the connect four game. I do not think you can beat me, mere mortal human, for I am a powerful A.I.. ";
 const MOVE_MESSAGE_NO_SLOT = "Hmm. I had a problem understanding that move. ";
 const START_GAME_MESSAGE = "Starting the game now. ";
 const MOVE_REPROMPT = "You can select columns one through seven. Which column do you want? ";
@@ -82,14 +82,16 @@ const StartGameIntentHandler = {
         const supportedInterfaces = Alexa.getSupportedInterfaces(handlerInput.requestEnvelope);
 
         if(supportedInterfaces["Alexa.Presentation.HTML"]) {
+            const websiteLink = "https://connect-4-alexa.s3.amazonaws.com/webapp/index.html" + genRandomQueryParam();
+            console.log("Trying to open: " + websiteLink);
             return handlerInput.responseBuilder
                 .addDirective({
                     type: "Alexa.Presentation.HTML.Start",
                     data: {
-                        mySsml: "<speak>Hello</speak"
+                        mySsml: "<speak>Hello</speak>"
                     },
                     request: {
-                        uri: "https://connect-4-alexa.s3.amazonaws.com/webapp/index.html",
+                        uri: websiteLink,
                         method: "GET"
                     },
                     transformers: [
@@ -103,8 +105,8 @@ const StartGameIntentHandler = {
                         timeoutInSeconds: 300
                     }
                 })
-                .speak(START_GAME_MESSAGE)
-                .reprompt(false)
+                // .speak(START_GAME_MESSAGE)
+                .shouldEndSession(false)
                 .getResponse();
         } else if(supportedInterfaces["Alexa.Presentation.APL"]) {
             //TODO APL Visuals.
@@ -119,6 +121,10 @@ const StartGameIntentHandler = {
                 .getResponse();
         }
     }
+}
+
+function genRandomQueryParam() {
+    return "?rand=" + Math.floor(Math.random() * 10000);
 }
 
 const HelpIntentHandler = {
